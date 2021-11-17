@@ -12,7 +12,7 @@ class TestCreditClass(unittest.TestCase):
         """Создание кредита без первоначального взноса."""
         credit = Credit(amount=200000, interest=12, downpayment=0, term=24)
         self.assertEqual(round(credit.get_month_payment(), 4), 9414.6944)
-        self.assertEqual(round(credit.get_total_percents(), 4), 112.9763)
+        self.assertEqual(round(credit.get_total_percents(), 4), 12.9763)
         self.assertEqual(round(credit.get_total_value(), 4), 225952.6667)
 
     def test_credit_with_downpayment(self):

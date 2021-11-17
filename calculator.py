@@ -26,7 +26,7 @@ class Credit:
 
     def get_total_percents(self) -> float:
         """Возвращает общий объём начисленных процентов."""
-        return  (self.get_total_value() / self.amount) / self.PERCENT_TO_FRAC
+        return  (self.get_total_value() / self.amount) / self.PERCENT_TO_FRAC - 100
 
     def get_total_value(self) -> float:
         """Возвращает общую сумму выплаты по кредиту."""
@@ -36,8 +36,9 @@ class Credit:
         month_payment = self.get_month_payment()
         percent_value = self.get_total_percents()
         total_payment = self.get_total_value()
-        return (f'Месячная выплата: {month_payment:.2f}\nОбщий объём процентов: '
-            f'{percent_value:.2f}\nОбщая сумма выплаты: {total_payment:.2f}')
+        return (f'Месячная выплата: {month_payment:.2f}\n'
+                f'Общий объём начисленных процентов: {percent_value:.2f}\n'
+                f'Общая сумма выплаты: {total_payment:.2f}')
 
 
 def process_user_data(data: str) -> Credit:
