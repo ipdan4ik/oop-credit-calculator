@@ -9,10 +9,13 @@
 1. Клонируйте репозиторий  
  `git clone https://github.com/ipdan4ik/oop-credit-calculator.git`
 
-2. (Опционально) Проверьте работоспособность программы  
+2. Перейдите в папку oop-credit-calculator  
+`cd oop-credit-calculator`
+
+3. (Опционально) Проверьте работоспособность программы  
  `python test.py`
 
-3. Запустите файл `calculator.py`  
+4. Запустите файл `calculator.py`  
 `python calculator.py`
 
 ## Инструкция по использованию
