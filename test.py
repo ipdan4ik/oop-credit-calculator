@@ -1,6 +1,6 @@
 import unittest
 
-from main import Credit, process_user_data
+from calculator import Credit, process_user_data
 
 
 class TestCreditClass(unittest.TestCase):

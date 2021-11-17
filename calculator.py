@@ -17,18 +17,18 @@ class Credit:
     downpayment: float
     term: float
 
-    def get_month_payment(self):
+    def get_month_payment(self) -> float:
         """Возвращает месячную выплату по кредиту."""
         months_interest_frac = self.interest * self.YY_TO_MM * self.PERCENT_TO_FRAC
         return ((self.amount - self.downpayment) * (months_interest_frac +
                 (months_interest_frac) /
                 (((1 + months_interest_frac) ** self.term) - 1)))
 
-    def get_total_percents(self):
+    def get_total_percents(self) -> float:
         """Возвращает общий объём начисленных процентов."""
         return  (self.get_total_value() / self.amount) / self.PERCENT_TO_FRAC
 
-    def get_total_value(self):
+    def get_total_value(self) -> float:
         """Возвращает общую сумму выплаты по кредиту."""
         return self.get_month_payment() * self.term
 
@@ -36,8 +36,8 @@ class Credit:
         month_payment = self.get_month_payment()
         percent_value = self.get_total_percents()
         total_payment = self.get_total_value()
-        return (f'Месячная выплата: {month_payment}\nОбщий объём процентов: '
-            f'{percent_value}\nОбщая сумма выплаты: {total_payment}')
+        return (f'Месячная выплата: {month_payment:.2f}\nОбщий объём процентов: '
+            f'{percent_value:.2f}\nОбщая сумма выплаты: {total_payment:.2f}')
 
 
 def process_user_data(data: str) -> Credit:
@@ -67,5 +67,4 @@ if __name__ == '__main__':
                 'term: 24\n')
 
     credit = process_user_data(USER_DATA)
-
     print(credit)
