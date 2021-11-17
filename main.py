@@ -26,26 +26,29 @@ class Credit:
 
     def get_total_percents(self):
         """Возвращает общий объём начисленных процентов."""
-        return 100 + (self.term * self.interest * self.YY_TO_MM)
+        return  (self.get_total_value() / self.amount) / self.PERCENT_TO_FRAC
 
     def get_total_value(self):
         """Возвращает общую сумму выплаты по кредиту."""
-        return self.amount * self.get_total_percents() * self.PERCENT_TO_FRAC
+        return self.get_month_payment() * self.term
 
     def __repr__(self) -> str:
-        month_payment = credit.get_month_payment()
-        percent_value = credit.get_total_percents()
-        total_payment = credit.get_total_value()
-        return (f'Месячная выплата: {month_payment:.2f}\nОбщий объём процентов: '
-            f'{percent_value:.2f}\nОбщая сумма выплаты: {total_payment:.2f}')
+        month_payment = self.get_month_payment()
+        percent_value = self.get_total_percents()
+        total_payment = self.get_total_value()
+        return (f'Месячная выплата: {month_payment}\nОбщий объём процентов: '
+            f'{percent_value}\nОбщая сумма выплаты: {total_payment}')
 
 
 def process_user_data(data: str) -> Credit:
     """Возвращает объект Credit, полученный на основе введённых строковых данных."""
     values = {}
     try:
-        for line in data.splitlines()[:-1]:
-            field, amount = line.split(': ')
+        for line in data.splitlines():
+            key_value_pair = line.split(': ')
+            if len(key_value_pair) != 2:
+                continue
+            field, amount = key_value_pair
             if field in INPUT_FIELDS:
                 values[field] = float(amount.replace('%', ''))
     except ValueError as val_error:
@@ -61,8 +64,7 @@ if __name__ == '__main__':
     USER_DATA = ('amount: 200000\n'
                 'interest: 12%\n'
                 'downpayment: 0\n'
-                'term: 24\n'
-                ' ')
+                'term: 24\n')
 
     credit = process_user_data(USER_DATA)
 
