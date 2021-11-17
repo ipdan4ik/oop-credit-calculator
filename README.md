@@ -19,7 +19,9 @@
 1. Для использования данного программного модуля в своих программах, поместите файл `calculator.py` в папку с вашим проектом.
 
 2. Импортируйте необходимые классы и функции  
-`from calculator import Credit, process_user_data`
+```python
+from calculator import Credit, process_user_data
+```
 
 3. Создайте объект класса Credit с помощью функции `process_user_data`  
 ```python
