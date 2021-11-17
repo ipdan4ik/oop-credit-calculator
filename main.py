@@ -2,7 +2,9 @@
 from dataclasses import dataclass
 from typing import ClassVar
 
-INPUT_FIELDS = ['amount', 'interest', 'downpayment', 'term']
+INPUT_FIELDS = {'amount', 'interest', 'downpayment', 'term'}
+FIELD_MISSING_ERROR = 'Не введены следующие данные: {difference}'
+INCORRECT_VALUE_ERROR = 'Некорректные данные для поля {field}'
 
 @dataclass
 class Credit:
@@ -30,14 +32,28 @@ class Credit:
         """Возвращает общую сумму выплаты по кредиту."""
         return self.amount * self.get_total_percents() * self.PERCENT_TO_FRAC
 
+    def __repr__(self) -> str:
+        month_payment = credit.get_month_payment()
+        percent_value = credit.get_total_percents()
+        total_payment = credit.get_total_value()
+        return (f'Месячная выплата: {month_payment:.2f}\nОбщий объём процентов: '
+            f'{percent_value:.2f}\nОбщая сумма выплаты: {total_payment:.2f}')
+
 
 def process_user_data(data: str) -> Credit:
     """Возвращает объект Credit, полученный на основе введённых строковых данных."""
     values = {}
-    for line in data.splitlines()[:-1]:
-        field, amount = line.split(': ')
-        values[field] = float(amount.replace('%', ''))
-    print(values)
+    try:
+        for line in data.splitlines()[:-1]:
+            field, amount = line.split(': ')
+            if field in INPUT_FIELDS:
+                values[field] = float(amount.replace('%', ''))
+    except ValueError as val_error:
+        raise ValueError(INCORRECT_VALUE_ERROR.format(field=field)) from val_error
+
+    if set(values.keys()) != INPUT_FIELDS:
+        difference = ', '.join(INPUT_FIELDS - set(values.keys()))
+        raise KeyError(FIELD_MISSING_ERROR.format(difference=difference))
     return Credit(**values)
 
 
@@ -50,8 +66,4 @@ if __name__ == '__main__':
 
     credit = process_user_data(USER_DATA)
 
-    month_payment = credit.get_month_payment()
-    percent_value = credit.get_total_percents()
-    total_payment = credit.get_total_value()
-    print(f'Месячная выплата: {month_payment}\nОбщий объём процентов:'
-            f'{percent_value}\nОбщая сумма выплаты: {total_payment}')
+    print(credit)
