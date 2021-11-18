@@ -3,6 +3,22 @@ import unittest
 
 import calculator
 
+class TestProgram(unittest.TestCase):
+    """Проверка работоспособности программы без проверки значений"""
+
+    def test_credit_working(self):
+        """Создание объекта класса Credit."""
+        calculator.Credit(amount=100000, interest=5.5, downpayment=20000, term=30)
+
+    def test_all_working(self):
+        """Запуск функции process_user_data"""
+        user_data = ('amount: 200000\n'
+                'interest: 12%\n'
+                'downpayment: 0\n'
+                'term: 24\n')
+
+        calculator.process_user_data(user_data)
+
 
 class TestCreditClass(unittest.TestCase):
     """Проверка класса Credit."""
