@@ -1,7 +1,7 @@
 """Модуль кредитного калькулятора."""
 from dataclasses import dataclass
 from typing import ClassVar
-
+from loguru import logger
 import Levenshtein
 
 INPUT_FIELDS = {'amount', 'interest', 'downpayment', 'term'}
@@ -9,6 +9,11 @@ FIELD_MISSING_ERROR = 'Не введены следующие данные: {dif
 INCORRECT_VALUE_ERROR = 'Некорректные данные для поля {field}'
 
 TYPO_FRACTION = 0.25
+
+logger.add(sink='calculator.log',
+            format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
+            encoding="utf8")
+logger.info('Модуль calculator запущен.')
 
 @dataclass
 class Credit:
@@ -20,6 +25,9 @@ class Credit:
     interest: float
     downpayment: float
     term: float
+
+    def __post_init__(self):
+        logger.info(f"Объект создан: {self.__repr__()}")
 
     def get_month_payment(self) -> float:
         """Возвращает месячную выплату по кредиту."""
@@ -36,7 +44,7 @@ class Credit:
         """Возвращает общую сумму выплаты по кредиту."""
         return self.get_month_payment() * self.term
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         month_payment = self.get_month_payment()
         percent_value = self.get_total_percents()
         total_payment = self.get_total_value()
@@ -47,13 +55,17 @@ class Credit:
 def find_typo(string):
     """Возвращает строку с исправленными опечатками, если их объём не превышает TYPO_FRACTION."""
     for field in INPUT_FIELDS:
+        if field == string:
+            return field
         if Levenshtein.distance(string, field) <= round(TYPO_FRACTION * len(field), 0):
+            logger.info(f'Typo fixed: {string} to {field}')
             return field
 
 def process_user_data(data: str) -> Credit:
     """Возвращает объект Credit, полученный на основе введённых строковых данных."""
+    logger.info(f"Обработка введённых данных:\n{data}")
     values = {}
-    data = data.replace(' ', '')
+    data = data.replace(' ', '').lower()
     try:
         for line in data.splitlines():
             key_value_pair = line.split(':')
@@ -64,16 +76,21 @@ def process_user_data(data: str) -> Credit:
             if field:
                 values[field] = float(amount.replace('%', ''))
     except ValueError as val_error:
-        raise ValueError(INCORRECT_VALUE_ERROR.format(field=field)) from val_error
+        error_message = INCORRECT_VALUE_ERROR.format(field=field)
+        logger.error(error_message)
+        raise ValueError(error_message) from val_error
 
     if set(values.keys()) != INPUT_FIELDS:
         difference = ', '.join(INPUT_FIELDS - set(values.keys()))
-        raise KeyError(FIELD_MISSING_ERROR.format(difference=difference))
+        error_message = FIELD_MISSING_ERROR.format(difference=difference)
+        logger.error(error_message)
+        raise KeyError(error_message)
+
     return Credit(**values)
 
 
 if __name__ == '__main__':
-    USER_DATA = ('amount: 200000\n'
+    USER_DATA = ('amont: 200000\n'
                 'interest: 12%\n'
                 'downpayment: 0\n'
                 'term: 24\n')

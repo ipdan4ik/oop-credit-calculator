@@ -1,7 +1,8 @@
 """Модуль юнит-тестов."""
 import unittest
-
+from loguru import logger
 import calculator
+
 
 class TestProgram(unittest.TestCase):
     """Проверка работоспособности программы без проверки значений"""
@@ -11,7 +12,7 @@ class TestProgram(unittest.TestCase):
         calculator.Credit(amount=100000, interest=5.5, downpayment=20000, term=30)
 
     def test_process_user_data_working(self):
-        """Запуск функции process_user_data"""
+        """Запуск функции process_user_data."""
         user_data = ('amount: 200000\n'
                 'interest: 12%\n'
                 'downpayment: 0\n'
@@ -19,6 +20,7 @@ class TestProgram(unittest.TestCase):
         calculator.process_user_data(user_data)
 
     def test_find_typo_working(self):
+        """Запуск функции find_typo."""
         calculator.find_typo('test')
 
 
@@ -72,7 +74,7 @@ class TestUserInputProcessing(unittest.TestCase):
                     'term: 24\n')
         credit_generated = calculator.process_user_data(user_data)
         credit_right = calculator.Credit(amount=200000, interest=12, downpayment=0, term=24)
-        self.assertEqual(credit_generated.__repr__(), credit_right.__repr__())
+        self.assertEqual(credit_generated.__str__(), credit_right.__str__())
 
     def test_extra_keys(self):
         """Проверка данных с лишними строками (они должны игнорироваться)."""
@@ -84,7 +86,7 @@ class TestUserInputProcessing(unittest.TestCase):
                     'term: 24\n')
         credit_generated = calculator.process_user_data(user_data)
         credit_right = calculator.Credit(amount=200000, interest=12, downpayment=0, term=24)
-        self.assertEqual(credit_generated.__repr__(), credit_right.__repr__())
+        self.assertEqual(credit_generated.__str__(), credit_right.__str__())
 
     def test_less_keys(self):
         """Проверка данных с недостающими строками (должно выдавать ошибку)."""
