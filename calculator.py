@@ -2,9 +2,13 @@
 from dataclasses import dataclass
 from typing import ClassVar
 
+import Levenshtein
+
 INPUT_FIELDS = {'amount', 'interest', 'downpayment', 'term'}
 FIELD_MISSING_ERROR = 'Не введены следующие данные: {difference}'
 INCORRECT_VALUE_ERROR = 'Некорректные данные для поля {field}'
+
+TYPO_FRACTION = 0.25
 
 @dataclass
 class Credit:
@@ -40,17 +44,24 @@ class Credit:
                 f'Общий объём начисленных процентов: {percent_value:.2f}\n'
                 f'Общая сумма выплаты: {total_payment:.2f}')
 
+def find_typo(string):
+    """Возвращает строку с исправленными опечатками, если их объём не превышает TYPO_FRACTION."""
+    for field in INPUT_FIELDS:
+        if Levenshtein.distance(string, field) <= round(TYPO_FRACTION * len(field), 0):
+            return field
 
 def process_user_data(data: str) -> Credit:
     """Возвращает объект Credit, полученный на основе введённых строковых данных."""
     values = {}
+    data = data.replace(' ', '')
     try:
         for line in data.splitlines():
-            key_value_pair = line.split(': ')
+            key_value_pair = line.split(':')
             if len(key_value_pair) != 2:
                 continue
             field, amount = key_value_pair
-            if field in INPUT_FIELDS:
+            field = find_typo(field)
+            if field:
                 values[field] = float(amount.replace('%', ''))
     except ValueError as val_error:
         raise ValueError(INCORRECT_VALUE_ERROR.format(field=field)) from val_error

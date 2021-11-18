@@ -12,10 +12,13 @@
 2. Перейдите в папку oop-credit-calculator  
 `cd oop-credit-calculator`
 
-3. (Опционально) Проверьте работоспособность программы  
+3. Установите необходимые библиотеки  
+`pip install -r requirements.txt`
+
+4. (Опционально) Проверьте работоспособность программы  
  `python test.py`
 
-4. Запустите файл `calculator.py`  
+5. Запустите файл `calculator.py`  
 `python calculator.py`
 
 ## Инструкция по использованию

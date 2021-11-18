@@ -10,14 +10,16 @@ class TestProgram(unittest.TestCase):
         """Создание объекта класса Credit."""
         calculator.Credit(amount=100000, interest=5.5, downpayment=20000, term=30)
 
-    def test_all_working(self):
+    def test_process_user_data_working(self):
         """Запуск функции process_user_data"""
         user_data = ('amount: 200000\n'
                 'interest: 12%\n'
                 'downpayment: 0\n'
                 'term: 24\n')
-
         calculator.process_user_data(user_data)
+
+    def test_find_typo_working(self):
+        calculator.find_typo('test')
 
 
 class TestCreditClass(unittest.TestCase):
@@ -34,6 +36,29 @@ class TestCreditClass(unittest.TestCase):
         """Создание кредита с первоначальным взносом."""
         credit = calculator.Credit(amount=100000, interest=5.5, downpayment=20000, term=30)
         self.assertEqual(round(credit.get_month_payment(), 4), 2860.2969)
+
+
+class TestTypoFinding(unittest.TestCase):
+    """Проверка функции нахождения опечаток."""
+
+    def test_without_typo(self):
+        """Строка без опечаток."""
+        field_name = list(calculator.INPUT_FIELDS)[0]
+        field_name_fixed = calculator.find_typo(field_name)
+        self.assertEqual(field_name, field_name_fixed)
+
+    def test_with_small_typo(self):
+        """Строка с допустимой опечаткой."""
+        field_name_right = 'amount'
+        field_name_with_typo = 'amoutn'
+        field_name_fixed = calculator.find_typo(field_name_with_typo)
+        self.assertEqual(field_name_right, field_name_fixed)
+
+    def test_with_big_typo(self):
+        """Строка с большой опечаткой (строки отличаются более чем на 25%)."""
+        field_name_with_typo = 'aboba'
+        field_name_fixed = calculator.find_typo(field_name_with_typo)
+        self.assertEqual(field_name_fixed, None)
 
 
 class TestUserInputProcessing(unittest.TestCase):
