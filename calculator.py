@@ -1,5 +1,6 @@
 """Модуль кредитного калькулятора."""
 from dataclasses import dataclass
+import sys
 from typing import ClassVar
 from loguru import logger
 import Levenshtein
@@ -10,7 +11,8 @@ INCORRECT_VALUE_ERROR = 'Некорректные данные для поля {
 
 TYPO_FRACTION = 0.25
 
-logger.add(sink='calculator.log',
+SCRIPT_PATH = sys.path[0]
+logger.add(sink=SCRIPT_PATH + '\\calculator.log',
             format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
             encoding="utf8")
 logger.info('Модуль calculator запущен.')
